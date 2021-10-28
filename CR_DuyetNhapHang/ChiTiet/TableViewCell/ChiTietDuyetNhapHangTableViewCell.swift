@@ -48,21 +48,23 @@ class ChiTietDuyetNhapHangTableViewCell: BaseTableViewCell {
         lable.textAlignment = .center
         return lable
     }()
-    private let donGia:UILabel = {
-        let lable = UILabel()
+    private let donGia:DefaultUILabel = {
+        let lable = DefaultUILabel()
         lable.text = "Loading..."
         lable.textColor = .darkGray
         lable.font = .systemFont(ofSize: 13, weight: .regular)
-        lable.textAlignment = .center
+        lable.textAlignment = .right
+        lable.textInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 2)
         return lable
     }()
-    private let thanhTien:UILabel = {
-        let lable = UILabel()
+    private let thanhTien:DefaultUILabel = {
+        let lable = DefaultUILabel()
         lable.numberOfLines = 0
         lable.text = "Loading..."
         lable.textColor = .darkGray
         lable.font = .systemFont(ofSize: 13, weight: .regular)
-        lable.textAlignment = .center
+        lable.textAlignment = .right
+        lable.textInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 2)
         return lable
     }()
     

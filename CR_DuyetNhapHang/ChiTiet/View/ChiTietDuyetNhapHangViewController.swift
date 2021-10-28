@@ -20,7 +20,6 @@ class ChiTietDuyetNhapHangViewController: BaseVC<ChiTietDuyetNhapHangView> {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.presenter?.getInfoDuyetNhapHang()
-        self.title = "Duyệt Nhập Hàng"
         self.bindTableView()
         self.bindButton()
         self.bindData()

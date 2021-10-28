@@ -129,7 +129,8 @@ class DanhSachDuyetNhapHangViewController: BaseVC<DanhSachDuyetNhapHangView> {
             .subscribe(onNext: { [weak self]indexPath in
                 guard let self = self else { return }
                 let soPhieu = self.presenter?.listDuyetNhapHangFilter.value[indexPath.row].docentry ?? 0
-                self.moveToChiTietDuyetNhapHang(soPhieu: soPhieu)
+                let soCT = self.presenter?.listDuyetNhapHangFilter.value[indexPath.row].docentryNhapHang ?? 0
+                self.moveToChiTietDuyetNhapHang(soPhieu: soPhieu,soCT: soCT)
             }).disposed(by: self.bag)
     }
 
@@ -153,9 +154,10 @@ class DanhSachDuyetNhapHangViewController: BaseVC<DanhSachDuyetNhapHangView> {
         self.present(vc, animated: true, completion: nil)
     }
     
-    private func moveToChiTietDuyetNhapHang(soPhieu:Int){
+    private func moveToChiTietDuyetNhapHang(soPhieu:Int,soCT:Int){
         let vc = ChiTietDuyetNhapHangRouter().configureVIPERChiTietDuyetNhapHang()
         vc.presenter?.soPhieu = soPhieu
+        vc.title = "Duyệt Số CT : \(soCT)"
         vc.delegate = self
         self.navigationController?.pushViewController(vc, animated: true)
     }
@@ -169,14 +171,15 @@ extension DanhSachDuyetNhapHangViewController : DanhSachDuyetNhapHangPresenterTo
                 self.mainView.viewSelectType.isHidden = isInput
                 self.mainView.searchTextField.placeholder = placeholder
             }
-            if isInput == true {
+//            if isInput == true {
                 self.presenter?.shopCode.accept("")
                 self.presenter?.status.accept("")
                 self.presenter?.getListDuyetNhapHang(
                     formDate: self.presenter?.fromDate.value ?? "",
                     toDate:  self.presenter?.toDate.value ?? ""
                 )
-            }
+//            }
+            
         }
     }
 
@@ -203,7 +206,7 @@ extension DanhSachDuyetNhapHangViewController : DanhSachDuyetNhapHangPresenterTo
 extension DanhSachDuyetNhapHangViewController : DropDownViewDelegate {
     
     func selectItem(index: Int, title: String) {
-        
+  
         if self.presenter?.chooseType == 0 {
             DispatchQueue.main.async { [weak self] in
                 self?.mainView.typeButton.setTitle(title, for: .normal)

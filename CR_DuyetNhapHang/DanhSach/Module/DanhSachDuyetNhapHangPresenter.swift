@@ -16,6 +16,7 @@ class DanhSachDuyetNhapHangPresenter : DanhSachDuyetNhapHangViewToPresenterProto
     var typeSearch:Int = 0
     var typeTextField:Int = 0 //0 : Chọn loại tình trạng, 2 : Chọn shop
     var chooseType:Int = 0
+    var indexSearchType:Int = 0
     var isFromDate:Bool = false
     
     var soPhieu:BehaviorRelay<Int> = BehaviorRelay(value: 0)
@@ -63,7 +64,9 @@ class DanhSachDuyetNhapHangPresenter : DanhSachDuyetNhapHangViewToPresenterProto
     func searchType(index: Int) {
         var isShow:Bool = false
         var placeHolder:String = ""
-        
+        if self.indexSearchType == index {
+            return
+        }
         switch index {
         case 0:
             isShow = false
@@ -75,6 +78,7 @@ class DanhSachDuyetNhapHangPresenter : DanhSachDuyetNhapHangViewToPresenterProto
             isShow = false
             placeHolder = "Chọn shop"
         }
+        self.indexSearchType = index
         self.view?.didSelectedType(isInput: isShow, placeholder: placeHolder)
     }
 
@@ -158,7 +162,7 @@ extension DanhSachDuyetNhapHangPresenter : DanhSachDuyetNhapHangInteractorToPres
         self.listDuyetNhapHang.accept(model.listDuyetNhapHang ?? [])
         let listDuyetNhapHang = model.listDuyetNhapHang ?? []
         self.listDuyetNhapHangFilter.accept(
-            listDuyetNhapHang.sorted(by: { $0.docentry ?? 0 > $1.docentry ?? 0})
+            listDuyetNhapHang.sorted(by: { ($0.status ?? 0, $1.docentry ?? 0) < ($1.status ?? 0,$0.docentry ?? 0) })
         )
     }
 
