@@ -52,13 +52,13 @@ class DanhSachDuyetNhapHangPresenter : DanhSachDuyetNhapHangViewToPresenterProto
         let fromDates:String = arrayFormDate[2] + arrayFormDate[1] + arrayFormDate[0]
         
         self.interactor?.getListDuyetNhapHang(
-            soPhieu: self.soPhieu.value,
+            soPhieu: 0,
             fromDate: fromDates,
             toDate: toDates,
             user: Helper.getUserCode() ?? "",
-            shopCode: self.shopCode.value,
+            shopCode: "",
             isPM: 0,
-            status: self.status.value)
+            status: "")
     }
     
     func searchType(index: Int) {
@@ -103,25 +103,15 @@ class DanhSachDuyetNhapHangPresenter : DanhSachDuyetNhapHangViewToPresenterProto
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {return}
             if searchStatus != nil {
-//                let listDuyetNhapHang = self.listDuyetNhapHang.value.filter { $0.status == searchStatus }
-//                self.listDuyetNhapHangFilter.accept([])
-//                self.listDuyetNhapHangFilter.accept(
-//                    listDuyetNhapHang.sorted(by: { $0.docentry ?? 0 > $1.docentry ?? 0})
-//                )
                 self.status.accept("\(searchStatus ?? 0)")
                 self.shopCode.accept("")
-                self.getListDuyetNhapHang(formDate: self.fromDate.value, toDate: self.toDate.value)
+                self.filterListDuyetNhapHang(self.listDuyetNhapHang.value)
             }else if searchSoCT != "" {
                 self.filterContentForSearchText(searchText: searchSoCT)
             }else if searchShop != "" {
-//                let listDuyetNhapHang = self.listDuyetNhapHang.value.filter { $0.shopCode == searchShop }
-//                self.listDuyetNhapHangFilter.accept([])
-//                self.listDuyetNhapHangFilter.accept(
-//                    listDuyetNhapHang.sorted(by: { $0.docentry ?? 0 > $1.docentry ?? 0})
-//                )
                 self.status.accept("")
                 self.shopCode.accept(searchShop)
-                self.getListDuyetNhapHang(formDate: self.fromDate.value, toDate: self.toDate.value)
+                self.filterListDuyetNhapHang(self.listDuyetNhapHang.value)
             }else {
                 self.listDuyetNhapHangFilter.accept(self.listDuyetNhapHang.value)
             }
@@ -158,12 +148,30 @@ class DanhSachDuyetNhapHangPresenter : DanhSachDuyetNhapHangViewToPresenterProto
 //MARK: -Out Presenter To View
 extension DanhSachDuyetNhapHangPresenter : DanhSachDuyetNhapHangInteractorToPresenterProtocol {
     
+    private func filterListDuyetNhapHang(_ model: [DanhSachDuyetNhapHangEntity.ListDuyetNhapHang]) {
+        let listDuyetNhapHang = model
+        if self.status.value != "" {
+            let listFilter = listDuyetNhapHang.filter { $0.status == Int(self.status.value) }
+            self.listDuyetNhapHangFilter.accept([])
+            self.listDuyetNhapHangFilter.accept(
+                listFilter.sorted(by: { $0.docentry ?? 0 > $1.docentry ?? 0})
+            )
+        } else if self.shopCode.value != "" {
+            let listFilter = listDuyetNhapHang.filter { $0.shopCode == self.shopCode.value }
+            self.listDuyetNhapHangFilter.accept([])
+            self.listDuyetNhapHangFilter.accept(
+                listFilter.sorted(by: { ($0.status ?? 0, $1.docentry ?? 0) < ($1.status ?? 0,$0.docentry ?? 0) })
+            )
+        } else {
+            self.listDuyetNhapHangFilter.accept(
+                listDuyetNhapHang.sorted(by: { ($0.status ?? 0, $1.docentry ?? 0) < ($1.status ?? 0,$0.docentry ?? 0) })
+            )
+        }
+    }
+    
     func getListDuyetNhapHangSuccess(model: DanhSachDuyetNhapHangEntity.ListDuyetNhapHangModel) {
         self.listDuyetNhapHang.accept(model.listDuyetNhapHang ?? [])
-        let listDuyetNhapHang = model.listDuyetNhapHang ?? []
-        self.listDuyetNhapHangFilter.accept(
-            listDuyetNhapHang.sorted(by: { ($0.status ?? 0, $1.docentry ?? 0) < ($1.status ?? 0,$0.docentry ?? 0) })
-        )
+        self.filterListDuyetNhapHang(model.listDuyetNhapHang ?? [])
     }
 
     func getDataShopAndStatusSuccess(model:DanhSachDuyetNhapHangEntity.DataShopAndStatusModel) {

@@ -18,7 +18,7 @@ enum APIRouterDuyetNhapHang: URLRequestConvertible {
         isPM : Int,
         status : String
     )
-    case getDataShopAndDataStatus
+    case getDataShopAndDataStatus(user:String)
     case getInfoDuyetNhapHangByID(
         soPhieu:Int
     )
@@ -80,8 +80,10 @@ enum APIRouterDuyetNhapHang: URLRequestConvertible {
     // MARK: - Parameters
     private var parameters: Parameters? {
         switch self {
-        case .getDataShopAndDataStatus:
-            return [:]
+        case .getDataShopAndDataStatus(let user):
+            return [
+                "User":user
+            ]
         case .getListDuyetNhapHang(
             soPhieu: let soPhieu,
             fromDate: let fromDate,

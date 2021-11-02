@@ -12,7 +12,8 @@ class DanhSachDuyetNhapHangInteractor:DanhSachDuyetNhapHangPresenterToInteractor
     weak var presenter: DanhSachDuyetNhapHangInteractorToPresenterProtocol?
     
     func getDataShopAndDataStatus() {
-        APIRequestDuyetNhapHang.request(APIRouterDuyetNhapHang.getDataShopAndDataStatus, DanhSachDuyetNhapHangEntity.DataShopAndStatusModel.self) { response in
+        let user = Helper.getUserCode() ?? ""
+        APIRequestDuyetNhapHang.request(APIRouterDuyetNhapHang.getDataShopAndDataStatus(user: user), DanhSachDuyetNhapHangEntity.DataShopAndStatusModel.self) { response in
             switch response {
             case .success(let model):
                 self.presenter?.getDataShopAndStatusSuccess(model: model)
@@ -30,8 +31,6 @@ class DanhSachDuyetNhapHangInteractor:DanhSachDuyetNhapHangPresenterToInteractor
                               shopCode: String,
                               isPM: Int,
                               status: String) {
-        print(fromDate)
-        print(toDate)
         APIRequestDuyetNhapHang.request(
             APIRouterDuyetNhapHang.getListDuyetNhapHang(
                 soPhieu: soPhieu,
